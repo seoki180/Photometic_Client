@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:photometic/screen/login_screen.dart';
+import 'package:photometic/screen/register_screen.dart';
+import 'package:photometic/screen/spash_screen.dart';
 import 'package:photometic/screen/start_screen.dart';
 
 void main() {
@@ -21,8 +24,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: StartScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/splash',
+      routes: {
+        '/splash': (context) => const SplashScreen(),
+        '/start': (context) => const StartScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+      },
     );
   }
 }

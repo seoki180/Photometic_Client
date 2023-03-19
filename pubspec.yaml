@@ -38,6 +38,9 @@ dependencies:
   fluttertoast: ^8.2.1
   http: ^0.13.5
   card_swiper: ^2.0.4
+  flutter_secure_storage: ^8.0.0
+  shared_preferences: ^2.0.18
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +70,7 @@ flutter:
     - assets/images/img1.gif
     - assets/images/img2.gif
     - assets/images/img3.gif
+    - assets/images/img_splash.gif
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

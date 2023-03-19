@@ -1,7 +1,5 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:photometic/screen/login_screen.dart';
-import 'package:photometic/screen/signUp_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -52,12 +50,7 @@ class _StartScreenState extends State<StartScreen>
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (BuildContext context) {
-                            return const LoginScreen();
-                          }),
-                        );
+                        Navigator.pushNamed(context, "/login");
                       },
                       child: const Text("로그인 하러 가기"),
                     ),
@@ -70,12 +63,7 @@ class _StartScreenState extends State<StartScreen>
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (BuildContext context) {
-                            return const SignUpScreen();
-                          }),
-                        );
+                        Navigator.pushNamed(context, "/register");
                       },
                       child: const Text("회원가입 하러 가기"),
                     ),

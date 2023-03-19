@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiServices {
-  final String baseUrl = "http://13.125.119.220:52000";
+  final String baseUrl = "http://13.125.119.220:52000/api";
 
   Future<Map> postLogin(loginInfo) async {
     final url = Uri.parse("$baseUrl/login");

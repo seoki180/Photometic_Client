@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:photometic/repositories/user_%20repositories.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,8 +11,23 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
+  Future<bool> checkLogin() async {
+    final userRepositories = UserRepositories();
+    var result = await userRepositories.Profile();
+    if (result == '') {
+      return false;
+    }
+    return true;
+  }
+
   void moveScreen() async {
-    Navigator.of(context).pushReplacementNamed('/start');
+    await checkLogin().then((isLogin) async {
+      if (isLogin) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/start');
+      }
+    });
   }
 
   @override

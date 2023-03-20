@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   children: [
                     const SizedBox(
-                      height: 300,
+                      height: 250,
                     ),
                     Text(
                       "어서오세요!",
@@ -66,18 +66,16 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: const [
               IdInput(),
               PasswordInput(),
-              SizedBox(
-                height: 40,
-              ),
               LoginButton(),
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
               ),
+              FindPassword(),
             ],
           ),
         ),
@@ -86,33 +84,55 @@ class _LoginScreenState extends State<LoginScreen>
   }
 }
 
-class LoginButton extends StatelessWidget {
-  const LoginButton({
-    super.key,
-  });
+class FindPassword extends StatelessWidget {
+  const FindPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final loginModel = Provider.of<LoginModel>(context);
-    return SizedBox(
-      width: 100,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: () async {
-          var userRepository = UserRepositories();
-          var res = await userRepository.Login(loginModel: loginModel);
-          Fluttertoast.showToast(msg: res.toString());
-          if (res!["code"] == 200) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red[200],
+    return TextButton(
+      onPressed: () {},
+      child: Text(
+        "비밀번호를 까먹으셨나요?",
+        style: TextStyle(
+          color: Colors.red[200],
         ),
-        child: const Icon(Icons.arrow_forward),
+      ),
+    );
+  }
+}
+
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final loginModel = Provider.of<LoginModel>(context, listen: false);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+      child: SizedBox(
+        width: 100,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: () async {
+            if (formkey.currentState!.validate()) {
+              var userRepository = UserRepositories();
+              var res = await userRepository.Login(loginModel: loginModel);
+
+              Fluttertoast.showToast(msg: res.toString());
+              if (res!["code"] == 200) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              }
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red[200],
+          ),
+          child: const Icon(Icons.arrow_forward),
+        ),
       ),
     );
   }
@@ -124,31 +144,43 @@ class PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginModel = Provider.of<LoginModel>(context);
-    return TextField(
+
+    return TextFormField(
       onChanged: (password) => loginModel.setPassword(password),
       decoration: const InputDecoration(
         labelText: "PASSWORD",
       ),
       keyboardType: TextInputType.text,
       obscureText: true,
+      validator: (password) {
+        if (password!.isEmpty) {
+          return "비밀번호를 입력하세요";
+        }
+        return null;
+      },
     );
   }
 }
 
 class IdInput extends StatelessWidget {
-  const IdInput({
-    super.key,
-  });
+  const IdInput({super.key});
 
   @override
   Widget build(BuildContext context) {
     final loginModel = Provider.of<LoginModel>(context);
-    return TextField(
-      onChanged: (password) => loginModel.setId(password),
+
+    return TextFormField(
+      onChanged: (id) => loginModel.setId(id),
       decoration: const InputDecoration(
         labelText: "ID",
       ),
       keyboardType: TextInputType.emailAddress,
+      validator: (id) {
+        if (id!.isEmpty) {
+          return "아이디를 입력하세요";
+        }
+        return null;
+      },
     );
   }
 }

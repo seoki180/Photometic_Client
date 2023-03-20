@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:photometic/screen/home_screen.dart';
 import 'package:photometic/screen/login_screen.dart';
 import 'package:photometic/screen/register_screen.dart';
 import 'package:photometic/screen/spash_screen.dart';
@@ -32,6 +33,7 @@ class App extends StatelessWidget {
         '/start': (context) => const StartScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }

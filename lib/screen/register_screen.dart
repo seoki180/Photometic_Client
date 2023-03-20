@@ -16,10 +16,6 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen>
     with SingleTickerProviderStateMixin {
-  // final TextEditingController idController = TextEditingController();
-  // final TextEditingController passwordController = TextEditingController();
-  // final TextEditingController nameController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -106,14 +102,18 @@ class RegisterButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         onPressed: () async {
-          UserRepositories userRepositories = UserRepositories();
-          var res =
-              await userRepositories.Register(registerModel: registerModel);
-          if (res["code"] == 200) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()));
+          if (formkey.currentState!.validate()) {
+            UserRepositories userRepositories = UserRepositories();
+            var res =
+                await userRepositories.Register(registerModel: registerModel);
+            if (res["code"] == 200) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+              );
+            }
+            Fluttertoast.showToast(msg: res.toString());
           }
-          Fluttertoast.showToast(msg: res.toString());
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.red[200],
@@ -133,7 +133,7 @@ class NameInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final registerModel = Provider.of<RegisterModel>(context);
 
-    return TextField(
+    return TextFormField(
       onChanged: (name) => {
         registerModel.setName(name),
       },
@@ -141,6 +141,16 @@ class NameInput extends StatelessWidget {
         labelText: "NAME",
       ),
       keyboardType: TextInputType.text,
+      validator: (name) {
+        if (name!.isEmpty) {
+          return "이름을 입력해주세요";
+        } else if (name.isEmpty) {
+          return "이름은 최소 2자 이상입니다";
+        } else if (name.length > 20) {
+          return "이름은 최대 20자 입니다";
+        }
+        return null;
+      },
     );
   }
 }
@@ -153,7 +163,7 @@ class PasswordInput extends StatelessWidget {
     //provider 를 통한 상태변화 감지
     final registerModel = Provider.of<RegisterModel>(context);
 
-    return TextField(
+    return TextFormField(
       onChanged: (password) => {
         registerModel.setPassword(password),
       },
@@ -162,6 +172,16 @@ class PasswordInput extends StatelessWidget {
       ),
       keyboardType: TextInputType.text,
       obscureText: true,
+      validator: (password) {
+        if (password!.isEmpty) {
+          return "비밀번호를 입력해주세요";
+        } else if (password.length < 8) {
+          return "비밀번호는 최소 8자 이상입니다.";
+        } else if (password.length > 20) {
+          return "비밀번호는 최대 20자 입니다";
+        }
+        return null;
+      },
     );
   }
 }
@@ -172,7 +192,7 @@ class IdInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final registerModel = Provider.of<RegisterModel>(context);
-    return TextField(
+    return TextFormField(
       onChanged: (id) => {
         registerModel.setId(id),
       },
@@ -180,6 +200,16 @@ class IdInput extends StatelessWidget {
         labelText: "ID",
       ),
       keyboardType: TextInputType.emailAddress,
+      validator: (id) {
+        if (id!.isEmpty) {
+          return "아이디를 입력해주세요";
+        } else if (id.length < 5) {
+          return "아이디는 최소 5자 이상입니다";
+        } else if (id.length > 20) {
+          return "아이디는 최대 20자 입니다";
+        }
+        return null;
+      },
     );
   }
 }

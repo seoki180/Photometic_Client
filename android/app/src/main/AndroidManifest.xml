@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.photomeic">
+    package="com.new.Photometic.name">
    <application
         android:label="photomeic"
         android:name="${applicationName}"

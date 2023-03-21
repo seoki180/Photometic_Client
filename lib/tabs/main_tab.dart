@@ -20,9 +20,8 @@ class HomeTab extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 var userRepository = UserRepositories();
-                var result = await userRepository.Profile();
-                print(result);
-                Fluttertoast.showToast(msg: result.toString());
+                var result = await userRepository.getProfile();
+                Fluttertoast.showToast(msg: result["data"].toString());
               },
               child: const Text("유저정보 보기"),
             ),
@@ -36,6 +35,13 @@ class HomeTab extends StatelessWidget {
                 );
               },
               child: const Text("로그아웃"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                var token = await storage.readAll();
+                Fluttertoast.showToast(msg: token.toString());
+              },
+              child: const Text("토큰보기"),
             ),
           ],
         ),

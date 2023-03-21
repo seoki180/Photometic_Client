@@ -13,11 +13,12 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   Future<bool> checkLogin() async {
     final userRepositories = UserRepositories();
-    var result = await userRepositories.Profile();
-    if (result == '') {
+    var result = await userRepositories.getProfile();
+    if (result["code"] == 200) {
+      return true;
+    } else {
       return false;
     }
-    return true;
   }
 
   void moveScreen() async {

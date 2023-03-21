@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photometic/tabs/main_tab.dart';
+import 'package:photometic/tabs/photos_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,12 +11,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  final int _currentTab = 0;
-  final List<Widget> _tab = [
+  int _currentTab = 0;
+  final List<Widget> _tabs = [
     const HomeTab(),
-    const HomeTab(),
-    const HomeTab(),
+    const PhotoTab(),
   ];
+
+  void onTapTab(index) {
+    setState(() {
+      _currentTab = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +29,18 @@ class _HomeScreenState extends State<HomeScreen>
       drawer: Drawer(
         child: ListView(),
       ),
-      body: const HomeTab(),
+      body: _tabs.elementAt(_currentTab),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentTab,
         showUnselectedLabels: false,
         showSelectedLabels: false,
+        onTap: onTapTab,
+        selectedIconTheme: const IconThemeData(
+          color: Colors.red,
+        ),
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.access_alarm_outlined), label: "home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.access_alarm_outlined), label: "home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.access_alarm_outlined), label: "home"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_album), label: "home"),
         ],
       ),
     );

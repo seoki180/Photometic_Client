@@ -12,7 +12,7 @@ class UserRepositories {
   static const storage = FlutterSecureStorage();
 
   Future Register({required RegisterModel registerModel}) async {
-    String url = "$LocalUrl/users/register";
+    String url = "$BaseUrl/users/register";
     final registerModelToJson = registerModel.toJson();
 
     try {
@@ -29,7 +29,7 @@ class UserRepositories {
   }
 
   Future Login({required LoginModel loginModel}) async {
-    String url = "$LocalUrl/users/login";
+    String url = "$BaseUrl/users/login";
     final loginModelToJson = loginModel.toJson();
 
     try {
@@ -52,7 +52,7 @@ class UserRepositories {
     }
   }
 
-  Future Profile() async {
+  Future getProfile() async {
     String url = "$LocalUrl/users/profile";
     String? token = await storage.read(key: "token");
 
@@ -64,8 +64,12 @@ class UserRepositories {
       if (response.statusCode == 200) {
         var res = json.decode(response.body);
         return res;
+      } else {
+        return {
+          "code": 419,
+          "msg": "token expired",
+        };
       }
-      return '';
     } catch (err) {
       return {
         "code": 500,

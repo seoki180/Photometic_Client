@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -15,6 +16,19 @@ class _StartScreenState extends State<StartScreen>
     "assets/images/img2.gif",
     "assets/images/img3.gif",
   ];
+
+  final storage = const FlutterSecureStorage();
+
+  void getLoginedInfo() async {
+    var loginedInfo = await storage.readAll();
+    print(loginedInfo);
+  }
+
+  @override
+  void initState() {
+    getLoginedInfo();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +49,11 @@ class _StartScreenState extends State<StartScreen>
                         return Image.asset(imageItem[index].toString());
                       }),
                       autoplay: true,
-                      pagination: const SwiperPagination(),
+                      pagination: const SwiperPagination(
+                          builder: DotSwiperPaginationBuilder(
+                        color: Colors.grey,
+                        activeColor: Colors.blue,
+                      )),
                     ),
                   ),
                 ],

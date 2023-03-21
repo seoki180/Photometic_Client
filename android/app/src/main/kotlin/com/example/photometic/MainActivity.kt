@@ -1,4 +1,4 @@
-package com.example.photomeic
+package com.example.photometic
 
 import io.flutter.embedding.android.FlutterActivity
 

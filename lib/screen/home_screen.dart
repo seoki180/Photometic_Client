@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:photometic/tabs/main_tab.dart';
-import 'package:photometic/tabs/photos_tab.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:photometic/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+
+const storage = FlutterSecureStorage();
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,47 +14,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  int _currentTab = 0;
-  final List<Widget> _tabs = [
-    const HomeTab(),
-    const PhotoTab(),
-  ];
-
-  void onTapTab(index) {
-    setState(() {
-      _currentTab = index;
-    });
+  @override
+  void initState() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.getProfile();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(),
-      ),
-      body: _tabs.elementAt(_currentTab),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentTab,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        onTap: onTapTab,
-        selectedIconTheme: const IconThemeData(
-          color: Colors.red,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Consumer<UserProvider>(
+              builder: (context, value, child) {
+                return Text("hello \n ${value.userCache}");
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                storage.delete(key: 'token');
+                Navigator.of(context).pushReplacementNamed('/start');
+              },
+              child: const Text("로그아웃"),
+            ),
+          ],
         ),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "home"),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_album), label: "home"),
-        ],
       ),
     );
   }
 }
-
-// Builder(builder = (context) {
-//               return IconButton(
-//                 onPressed: () {
-//                   Scaffold.of(context).openDrawer();
-//                 },
-//                 icon: const Icon(Icons.list_outlined),
-//               );
-//             }),

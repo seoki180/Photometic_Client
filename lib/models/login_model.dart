@@ -6,10 +6,12 @@ class LoginModel extends ChangeNotifier {
 
   void setId(String id) {
     this.id = id;
+    notifyListeners();
   }
 
   void setPassword(String password) {
     this.password = password;
+    notifyListeners();
   }
 
   String getId() {

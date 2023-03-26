@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photometic/models/register_model.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
-import 'package:photometic/screen/home_screen.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey<FormState> formkey = GlobalKey();
@@ -97,6 +96,10 @@ class RegisterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final registerModel = Provider.of<RegisterModel>(context, listen: false);
 
+    void moveScreen() async {
+      Navigator.of(context).pushReplacementNamed('/login');
+    }
+
     return SizedBox(
       width: 100,
       height: 50,
@@ -107,10 +110,7 @@ class RegisterButton extends StatelessWidget {
             var res =
                 await userRepositories.Register(registerModel: registerModel);
             if (res["code"] == 200) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
+              moveScreen();
             }
             Fluttertoast.showToast(msg: res.toString());
           }

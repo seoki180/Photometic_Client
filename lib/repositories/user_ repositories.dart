@@ -52,29 +52,50 @@ class UserRepositories {
     }
   }
 
+  // Future getProfile() async {
+  //   String url = "$BaseUrl/users/profile";
+  //   String? token = await storage.read(key: "token");
+
+  //   try {
+  //     final Response response = await http.get(
+  //       Uri.parse(url),
+  //       headers: {HttpHeaders.authorizationHeader: token!},
+  //     );
+  //     if (response.statusCode == 200) {
+  //       var res = json.decode(response.body);
+  //       return res;
+  //     } else {
+  //       return {
+  //         "code": 419,
+  //         "msg": "token expired",
+  //       };
+  //     }
+  //   } catch (err) {
+  //     return {
+  //       "code": 500,
+  //       "msg": err,
+  //     };
+  //   }
+  // }
+
   Future getProfile() async {
-    String url = "$LocalUrl/users/profile";
-    String? token = await storage.read(key: "token");
+    String? token = await storage.read(key: 'token');
+    String url = "$LocalUrl/users/check";
 
     try {
       final Response response = await http.get(
         Uri.parse(url),
         headers: {HttpHeaders.authorizationHeader: token!},
       );
+
       if (response.statusCode == 200) {
-        var res = json.decode(response.body);
-        return res;
+        var data = json.decode(response.body);
+        return data["data"]["userName"];
       } else {
-        return {
-          "code": 419,
-          "msg": "token expired",
-        };
+        return '';
       }
     } catch (err) {
-      return {
-        "code": 500,
-        "msg": err,
-      };
+      return '';
     }
   }
 }

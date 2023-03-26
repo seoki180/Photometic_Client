@@ -21,7 +21,7 @@ class _StartScreenState extends State<StartScreen>
 
   void getLoginedInfo() async {
     var loginedInfo = await storage.readAll();
-    print(loginedInfo);
+    // print(loginedInfo);
   }
 
   @override

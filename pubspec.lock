@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      sha256: "0894a098594263fe1caaba3520e3016d8a855caeb010a882273189cca10f11e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.1"
   fake_async:
     dependency: transitive
     description:
@@ -102,6 +110,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_exif_plugin:
+    dependency: "direct main"
+    description:
+      name: flutter_exif_plugin
+      sha256: "3639f0422ef626fab87536716ab69f1b6239ee249a2c8f6951008eb5d4826a53"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -240,6 +256,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.3"
+  image_pickers:
+    dependency: "direct main"
+    description:
+      name: image_pickers
+      sha256: "1c6ee09f1ee87ffe663f9599ce886c0b5e213d977b4cd307e69703ec4a93cad4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   js:
     dependency: transitive
     description:

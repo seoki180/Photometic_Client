@@ -12,7 +12,7 @@ class UserRepositories {
   static const storage = FlutterSecureStorage();
 
   Future Register({required RegisterModel registerModel}) async {
-    String url = "$BaseUrl/users/register";
+    String url = "$LocalUrl/users/register";
     final registerModelToJson = registerModel.toJson();
 
     try {
@@ -29,7 +29,7 @@ class UserRepositories {
   }
 
   Future Login({required LoginModel loginModel}) async {
-    String url = "$BaseUrl/users/login";
+    String url = "$LocalUrl/users/login";
     final loginModelToJson = loginModel.toJson();
 
     try {
@@ -43,44 +43,19 @@ class UserRepositories {
           value: res["jwt"]["access"],
         );
       }
-      return res;
+      return res["result"];
     } catch (err) {
       return {
         "code": 500,
+        "success": false,
         "msg": err,
       };
     }
   }
 
-  // Future getProfile() async {
-  //   String url = "$BaseUrl/users/profile";
-  //   String? token = await storage.read(key: "token");
-
-  //   try {
-  //     final Response response = await http.get(
-  //       Uri.parse(url),
-  //       headers: {HttpHeaders.authorizationHeader: token!},
-  //     );
-  //     if (response.statusCode == 200) {
-  //       var res = json.decode(response.body);
-  //       return res;
-  //     } else {
-  //       return {
-  //         "code": 419,
-  //         "msg": "token expired",
-  //       };
-  //     }
-  //   } catch (err) {
-  //     return {
-  //       "code": 500,
-  //       "msg": err,
-  //     };
-  //   }
-  // }
-
   Future getProfile() async {
-    String? token = await storage.read(key: 'token');
-    String url = "$LocalUrl/users/check";
+    String url = "$LocalUrl/users/me";
+    String? token = await storage.read(key: "token");
 
     try {
       final Response response = await http.get(
@@ -90,12 +65,29 @@ class UserRepositories {
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
+        print(data);
         return data["data"]["userName"];
       } else {
         return '';
       }
     } catch (err) {
       return '';
+    }
+  }
+
+  Future uploadPhoto({required File photo}) async {
+    String url = "$LocalUrl/users/uploads";
+    String? token = await storage.read(key: "token");
+
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    var image = await http.MultipartFile.fromPath('image', photo.path);
+    request.files.add(image);
+    request.headers.addAll({'Authorization': token!});
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully!');
+    } else {
+      print('Error uploading image. Status code: ${response.statusCode}');
     }
   }
 }

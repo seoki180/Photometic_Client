@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:photometic/providers/user_provider.dart';
-import 'package:provider/provider.dart';
-
-const storage = FlutterSecureStorage();
+import 'package:photometic/tabs/home_tab.dart';
+import 'package:photometic/tabs/profile_drawer_tab.dart';
+import 'package:photometic/tabs/profile_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,35 +12,47 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  @override
-  void initState() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.getProfile();
-    super.initState();
+  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  int _currentIndex = 1;
+  final List _tabList = [
+    const ProfileTab(),
+    const HomeTab(),
+    const ProfileTab(),
+  ];
+
+  _onTapItem(int index) {
+    index == 0
+        ? _drawerKey.currentState!.openDrawer()
+        : setState(() {
+            _currentIndex = index;
+          });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Consumer<UserProvider>(
-              builder: (context, value, child) {
-                return Text("hello \n ${value.userCache}");
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                storage.delete(key: 'token');
-                Navigator.of(context).pushReplacementNamed('/start');
-              },
-              child: const Text("로그아웃"),
-            ),
-          ],
-        ),
+      key: _drawerKey,
+      drawer: const Drawer(
+        child: ProfileDrawer(),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.red[200],
+        unselectedItemColor: Colors.black38,
+        currentIndex: _currentIndex,
+        onTap: _onTapItem,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle_rounded), label: "프로필"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "메인화면",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.wallpaper_outlined), label: "사진화면"),
+        ],
+      ),
+      body: _tabList[_currentIndex],
     );
   }
 }

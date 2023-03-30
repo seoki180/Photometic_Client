@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
   final userRepositories = UserRepositories();
   // 처음에 그냥 토큰 검사하고, 토큰이 있으면 서버로 보내서 검사
   Future<bool> checkLogin() async {
-    final res = userRepositories.getProfile();
+    final res = await userRepositories.getProfile();
     if (res == '') {
       return false;
     }
@@ -28,9 +28,11 @@ class _SplashScreenState extends State<SplashScreen>
     await checkLogin().then(
       (isLogin) async {
         if (isLogin) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/home', (route) => false);
         } else {
-          Navigator.of(context).pushReplacementNamed('/start');
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/start', (rotue) => false);
         }
       },
     );

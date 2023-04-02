@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
 
-class UserProvider extends ChangeNotifier {
+class PhotosProvider extends ChangeNotifier {
   UserRepositories userRepositories;
-  Map userCache = {};
+  Map photoCache = {};
 
-  UserProvider({required this.userRepositories}) {
-    getProfile();
+  PhotosProvider({required this.userRepositories}) {
+    // getPhotos();
   }
 
-  void getProfile() async {
-    final res = await userRepositories.getProfile();
-    userCache.update("name", (value) => res["userName"], ifAbsent: () => res);
+  void getPhotos() async {
+    final res = await userRepositories.getPhotos();
+    for (Map value in res) {
+      print("$value \n");
+      photoCache.update("photo", (value) => value, ifAbsent: () => null);
+    }
     notifyListeners();
     // final userData = res["userData"];
     // final userPhotos = res["userPhotos"];

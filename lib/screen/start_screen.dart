@@ -19,16 +19,16 @@ class _StartScreenState extends State<StartScreen>
 
   final storage = const FlutterSecureStorage();
 
-  void getLoginedInfo() async {
-    var loginedInfo = await storage.readAll();
-    // print(loginedInfo);
-  }
+  // void getLoginedInfo() async {
+  //   var loginedInfo = await storage.read(key: "token");
+  //   // print(loginedInfo);
+  // }
 
-  @override
-  void initState() {
-    getLoginedInfo();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getLoginedInfo();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,6 @@ class _StartScreenState extends State<StartScreen>
                     child: Swiper(
                       itemCount: 3,
                       itemBuilder: ((BuildContext context, int index) {
-                        // return Image.asset("assets/images/img.jpg");
                         return Image.asset(imageItem[index].toString());
                       }),
                       autoplay: true,

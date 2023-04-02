@@ -15,12 +15,12 @@ class ProfileDrawer extends StatefulWidget {
 class _ProfileDrawerState extends State<ProfileDrawer> {
   final storage = const FlutterSecureStorage();
 
-  @override
-  void initState() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.getProfile();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   final userProvider = Provider.of<UserProvider>(context, listen: false);
+  //   userProvider.getProfile();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

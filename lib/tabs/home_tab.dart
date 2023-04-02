@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photometic/providers/photos_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
 import 'package:provider/provider.dart';
@@ -19,30 +20,27 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.getProfile();
+    // final userProvider = Provider.of<UserProvider>(context, listen: false);
+    // final photosProvider = Provider.of<PhotosProvider>(context, listen: false);
+    // userProvider.getProfile();
+    // photosProvider.getPhotos();
     super.initState();
   }
 
   void getAlbum() async {
-    // XFile? imageFile =
-    //     await ImagePicker().pickImage(source: ImageSource.gallery);
-    // if (imageFile != null) {
-    //   final metadata = FlutterExif.fromPath(imageFile.path);
-    //   print(metadata);
-    //   setState(() {
-    //     isPicked = true;
-    //     _photo = File(imageFile.path);
-    //   });
-    // }
     XFile? imageFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (imageFile != null) {
       setState(() {
         _photo = File(imageFile.path);
         isPicked = true;
+        sendPhoto();
       });
     }
+  }
+
+  void checkPhotos(BuildContext context) async {
+    var data = context.read<PhotosProvider>().getPhotos();
   }
 
   void sendPhoto() {
@@ -63,11 +61,15 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Consumer<UserProvider>(
-                      builder: (context, value, child) {
-                        return Text("환영합니다 ${value.userCache["name"]}");
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(top: 100),
+                      child: Consumer<UserProvider>(
+                        builder: (context, value, child) {
+                          return Text("환영합니다 ${value.userCache["name"]}");
+                        },
+                      ),
                     ),
+                    const PhotoView(),
                     Container(
                       child: isPicked
                           ? Image.file(_photo!)
@@ -99,17 +101,54 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                     FloatingActionButton(
                       heroTag: "btn2",
                       onPressed: () {
-                        sendPhoto();
+                        checkPhotos(context);
                       },
                       backgroundColor: Colors.red[200],
-                      child: const Icon(Icons.published_with_changes),
-                    )
+                      child: const Icon(Icons.publish),
+                    ),
                   ],
                 ),
               ),
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PhotoView extends StatelessWidget {
+  const PhotoView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: Image.asset("assets/images/img1.gif"),
+          ),
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: Image.asset("assets/images/img1.gif"),
+          ),
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: Image.asset("assets/images/img1.gif"),
+          ),
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: Image.asset("assets/images/img1.gif"),
+          ),
+        ],
       ),
     );
   }

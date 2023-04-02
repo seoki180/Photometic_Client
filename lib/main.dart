@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photometic/models/login_model.dart';
+import 'package:photometic/providers/photos_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
 import 'package:photometic/screen/home_screen.dart';
@@ -22,10 +23,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final userRepositories = UserRepositories();
     final userProvider = UserProvider(userRepositories: userRepositories);
+    final photosProvider = PhotosProvider(userRepositories: userRepositories);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginModel()),
         ChangeNotifierProvider(create: (_) => userProvider),
+        ChangeNotifierProvider(create: (_) => photosProvider),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: true,

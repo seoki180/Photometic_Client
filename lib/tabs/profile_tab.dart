@@ -14,12 +14,12 @@ class ProfileTab extends StatefulWidget {
 
 class _ProfileTabState extends State<ProfileTab>
     with SingleTickerProviderStateMixin {
-  @override
-  void initState() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.getProfile();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   final userProvider = Provider.of<UserProvider>(context, listen: false);
+  //   userProvider.getProfile();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

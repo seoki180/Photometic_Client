@@ -53,7 +53,7 @@ class UserRepositories {
     }
   }
 
-  Future getPhotos() async {
+  Future getPhotoInfo() async {
     String url = "$LocalUrl/users/photos";
     String? token = await storage.read(key: "token");
 
@@ -65,6 +65,26 @@ class UserRepositories {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         return (data);
+      }
+    } catch (err) {
+      print(err);
+    }
+  }
+
+  Future getPhotos(userId) async {
+    String url = "$LocalUrl/id/$userId";
+    String? token = await storage.read(key: "token");
+
+    try {
+      final Response response = await http.get(
+        Uri.parse(url),
+        headers: {HttpHeaders.authorizationHeader: token!},
+      );
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        print(data);
+      } else {
+        print("no");
       }
     } catch (err) {
       print(err);
@@ -101,6 +121,7 @@ class UserRepositories {
     request.files.add(image);
     request.headers.addAll({'Authorization': token!});
     var response = await request.send();
+
     if (response.statusCode == 200) {
       print('Image uploaded successfully!');
     } else {

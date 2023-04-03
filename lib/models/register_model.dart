@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class RegisterModel extends ChangeNotifier {
-  String id = '';
-  String name = '';
-  String password = '';
+  late final String id;
+  late final String name;
+  late final String password;
 
   void setId(String id) {
     this.id = id;

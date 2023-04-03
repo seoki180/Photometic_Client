@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:photometic/providers/photos_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
 import 'package:provider/provider.dart';
@@ -17,15 +16,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   File? _photo;
   bool isPicked = false;
-
-  @override
-  void initState() {
-    // final userProvider = Provider.of<UserProvider>(context, listen: false);
-    // final photosProvider = Provider.of<PhotosProvider>(context, listen: false);
-    // userProvider.getProfile();
-    // photosProvider.getPhotos();
-    super.initState();
-  }
+  var userRepositories = UserRepositories();
 
   void getAlbum() async {
     XFile? imageFile =
@@ -39,13 +30,13 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     }
   }
 
-  void checkPhotos(BuildContext context) async {
-    var data = context.read<PhotosProvider>().getPhotos();
+  void sendPhoto() {
+    userRepositories.uploadPhoto(photo: _photo!);
   }
 
-  void sendPhoto() {
-    var userRepositories = UserRepositories();
-    userRepositories.uploadPhoto(photo: _photo!);
+  void getAllPhotos(context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.getPhotoUrl();
   }
 
   @override
@@ -55,30 +46,15 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Flexible(
+              flex: 25,
+              child: TopBar(),
+            ),
             Flexible(
               flex: 120,
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 100),
-                      child: Consumer<UserProvider>(
-                        builder: (context, value, child) {
-                          return Text("환영합니다 ${value.userCache["name"]}");
-                        },
-                      ),
-                    ),
-                    const PhotoView(),
-                    Container(
-                      child: isPicked
-                          ? Image.file(_photo!)
-                          : const SizedBox(
-                              width: 100,
-                            ),
-                    ),
-                  ],
-                ),
+              child: MainContents(
+                isPicked: isPicked,
+                photo: _photo,
               ),
             ),
             Flexible(
@@ -95,17 +71,11 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                       backgroundColor: Colors.red[200],
                       child: const Icon(Icons.publish),
                     ),
-                    const SizedBox(
-                      width: 100,
-                    ),
-                    FloatingActionButton(
-                      heroTag: "btn2",
-                      onPressed: () {
-                        checkPhotos(context);
-                      },
-                      backgroundColor: Colors.red[200],
-                      child: const Icon(Icons.publish),
-                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          getAllPhotos(context);
+                        },
+                        child: const Text("ok"))
                   ],
                 ),
               ),
@@ -117,52 +87,88 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   }
 }
 
-class PhotoView extends StatelessWidget {
-  const PhotoView({
+class MainContents extends StatelessWidget {
+  const MainContents({
+    super.key,
+    required this.isPicked,
+    required File? photo,
+  }) : _photo = photo;
+
+  final bool isPicked;
+  final File? _photo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Padding(
+            padding: EdgeInsets.only(top: 100), child: Text("Home Tab")),
+        Container(
+          child: isPicked
+              ? Image.file(_photo!)
+              : const SizedBox(
+                  width: 100,
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  const TopBar({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          SizedBox(
-            width: 100,
-            height: 100,
-            child: Image.asset("assets/images/img1.gif"),
-          ),
-          SizedBox(
-            width: 100,
-            height: 100,
-            child: Image.asset("assets/images/img1.gif"),
-          ),
-          SizedBox(
-            width: 100,
-            height: 100,
-            child: Image.asset("assets/images/img1.gif"),
-          ),
-          SizedBox(
-            width: 100,
-            height: 100,
-            child: Image.asset("assets/images/img1.gif"),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 150, 0),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.black,
+                    backgroundImage:
+                        AssetImage("assets/images/basic_profile.png"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Consumer<UserProvider>(
+                      builder: (context, value, child) {
+                        return Column(
+                          children: [
+                            Text(
+                              "${value.userCache["name"]}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              children: const [
+                Text("정렬 기준"),
+                Text("숨김 라이브러리"),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(
+            width: 400, child: Divider(color: Colors.red, thickness: 0.2))
+      ],
     );
   }
 }
-
-
-// FloatingActionButton(
-//                 onPressed: () {},
-//                 backgroundColor: Colors.red[200],
-//                 child: const Icon(Icons.publish),
-//               ),
-
-// Consumer<UserProvider>(
-//                   builder: (context, value, child) {
-//                     return Text("환영합니다 ${value.userCache["name"]}");
-//                   },
-//                 ),

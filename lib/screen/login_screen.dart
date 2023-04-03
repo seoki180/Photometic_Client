@@ -156,7 +156,7 @@ class FindPassword extends StatelessWidget {
         moveScreen(context);
       },
       child: Text(
-        "비밀번호를 까먹으셨나요?",
+        "아직 회원이 아니신가요?",
         style: TextStyle(
           color: Colors.red[200],
         ),

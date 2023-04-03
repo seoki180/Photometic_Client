@@ -3,23 +3,14 @@ import 'package:photometic/repositories/user_%20repositories.dart';
 
 class PhotosProvider extends ChangeNotifier {
   UserRepositories userRepositories;
-  Map photoCache = {};
+  List photoCache = [];
 
   PhotosProvider({required this.userRepositories}) {
-    // getPhotos();
+    getPhotoInfo();
   }
 
-  void getPhotos() async {
-    final res = await userRepositories.getPhotos();
-    for (Map value in res) {
-      print("$value \n");
-      photoCache.update("photo", (value) => value, ifAbsent: () => null);
-    }
+  void getPhotoInfo() async {
+    final res = await userRepositories.getPhotoInfo();
     notifyListeners();
-    // final userData = res["userData"];
-    // final userPhotos = res["userPhotos"];
-
-    // userCache.update("photos", (value) => userPhotos, ifAbsent: () => res);
-    // notifyListeners();
   }
 }

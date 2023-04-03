@@ -76,6 +76,7 @@ flutter:
     - assets/images/img2.gif
     - assets/images/img3.gif
     - assets/images/img_splash.gif
+    - assets/images/basic_profile.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

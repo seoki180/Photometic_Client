@@ -53,7 +53,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
                     children: [
                       Consumer<UserProvider>(builder: (context, value, child) {
                         return Text(
-                          "${value.userCache["name"]}",
+                          "${value.userCache["userName"]}",
                           style: const TextStyle(fontSize: 20),
                         );
                       }),

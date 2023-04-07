@@ -12,7 +12,7 @@ class UserRepositories {
   static const storage = FlutterSecureStorage();
 
   Future Register({required RegisterModel registerModel}) async {
-    String url = "$LocalUrl/users/register";
+    String url = "$LocalUrl/auth/register";
     final registerModelToJson = registerModel.toJson();
 
     try {
@@ -29,7 +29,7 @@ class UserRepositories {
   }
 
   Future Login({required LoginModel loginModel}) async {
-    String url = "$LocalUrl/users/login";
+    String url = "$LocalUrl/auth/login";
     final loginModelToJson = loginModel.toJson();
 
     try {
@@ -40,10 +40,10 @@ class UserRepositories {
       if (response.statusCode == 200) {
         await storage.write(
           key: "token",
-          value: res["jwt"]["access"],
+          value: res["result"]["jwt"]["access"],
         );
       }
-      return res["result"];
+      return res;
     } catch (err) {
       return {
         "code": 500,
@@ -92,7 +92,7 @@ class UserRepositories {
   }
 
   Future getProfile() async {
-    String url = "$LocalUrl/users/me";
+    String url = "$LocalUrl/user/profile";
     String? token = await storage.read(key: "token");
 
     try {
@@ -100,10 +100,9 @@ class UserRepositories {
         Uri.parse(url),
         headers: {HttpHeaders.authorizationHeader: token!},
       );
-
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        return data["data"];
+        return data["result"];
       } else {
         return '';
       }

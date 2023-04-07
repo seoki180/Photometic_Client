@@ -4,25 +4,28 @@ import 'package:photometic/repositories/user_%20repositories.dart';
 class UserProvider extends ChangeNotifier {
   UserRepositories userRepositories;
   Map userCache = {
-    "name": '',
-    "id": '',
+    "userName": "",
+    "Idx": '',
+    "profilePhoto": '',
   };
   List userPhoto = [];
 
   UserProvider({required this.userRepositories}) {
-    getProfile();
+    // getProfile();
   }
 
   void getProfile() async {
     final res = await userRepositories.getProfile();
-    userCache.update("name", (value) => res["userName"], ifAbsent: () => res);
-    userCache.update("id", (value) => res["id"], ifAbsent: () => res);
+    final data = res[0];
+    userCache.update("userName", (value) => data["userName"],
+        ifAbsent: () => data);
+    userCache.update("Idx", (value) => data["Idx"], ifAbsent: () => data);
     print(userCache);
     notifyListeners();
   }
 
   void getPhotoUrl() async {
-    final List? res = await userRepositories.getPhotos(userCache["id"]);
+    final List? res = await userRepositories.getPhotos(userCache["uniqueId"]);
     if (res != null) {
       userPhoto = res;
       print(userPhoto);

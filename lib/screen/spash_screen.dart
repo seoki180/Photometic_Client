@@ -15,13 +15,19 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   final userRepositories = UserRepositories();
+  final storage = const FlutterSecureStorage();
   // 처음에 그냥 토큰 검사하고, 토큰이 있으면 서버로 보내서 검사
+
   Future<bool> checkLogin() async {
-    final res = await userRepositories.getProfile();
-    if (res == '') {
-      return false;
+    var token = await storage.read(key: "token");
+    if (token != null) {
+      final res = await userRepositories.getProfile();
+      if (res == '') {
+        return false;
+      }
+      return true;
     }
-    return true;
+    return false;
   }
 
   void moveScreen() async {

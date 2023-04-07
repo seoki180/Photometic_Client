@@ -116,13 +116,28 @@ class MainContents extends StatelessWidget {
   }
 }
 
-class TopBar extends StatelessWidget {
-  const TopBar({
-    super.key,
-  });
+class TopBar extends StatefulWidget {
+  const TopBar({super.key});
+
+  @override
+  State<TopBar> createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
+  var profilePhoto = '';
+
+  void getProfilePhoto(context) {
+    var data = Provider.of<UserProvider>(context, listen: false);
+    if (data.userCache["profilePhoto"] != '') {
+      profilePhoto = data.userCache["profilePhoto"];
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    getProfilePhoto(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -132,11 +147,13 @@ class TopBar extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 0, 150, 0),
               child: Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.black,
-                    backgroundImage:
-                        AssetImage("assets/images/basic_profile.png"),
+                    backgroundImage: profilePhoto.isEmpty
+                        ? const AssetImage("assets/images/basic_profile.png")
+                            as ImageProvider
+                        : NetworkImage(profilePhoto),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -145,7 +162,7 @@ class TopBar extends StatelessWidget {
                         return Column(
                           children: [
                             Text(
-                              "${value.userCache["name"]}",
+                              "${value.userCache["userName"]}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                               ),

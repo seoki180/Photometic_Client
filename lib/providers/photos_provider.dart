@@ -10,7 +10,7 @@ class PhotosProvider extends ChangeNotifier {
   }
 
   void getPhotoInfo() async {
-    final res = await userRepositories.getPhotoInfo();
-    notifyListeners();
+    // final res = await userRepositories.getPhotoInfo();
+    // notifyListeners();
   }
 }

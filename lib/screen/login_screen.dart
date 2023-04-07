@@ -122,7 +122,7 @@ class LoginForm extends StatelessWidget {
                   var userRepository = UserRepositories();
                   var res = await userRepository.Login(loginModel: loginState);
                   Fluttertoast.showToast(msg: res.toString());
-                  if (res["success"]) {
+                  if (res["isSuccess"]) {
                     moveScreen(context);
                   }
                 }

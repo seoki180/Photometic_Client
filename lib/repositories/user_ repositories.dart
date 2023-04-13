@@ -92,7 +92,7 @@ class UserRepositories {
   }
 
   Future getProfile() async {
-    String url = "$LocalUrl/user/profile";
+    String url = "$LocalUrl/user/";
     String? token = await storage.read(key: "token");
 
     try {
@@ -111,12 +111,29 @@ class UserRepositories {
     }
   }
 
-  Future uploadPhoto({required File photo}) async {
-    String url = "$LocalUrl/users/uploads";
+  Future changeProfile(photo) async {
+    String url = "$LocalUrl/user/profile";
     String? token = await storage.read(key: "token");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
-    var image = await http.MultipartFile.fromPath('image', photo.path);
+    var image = await http.MultipartFile.fromPath('img', photo.path);
+    request.files.add(image);
+    request.headers.addAll({'Authorization': token!});
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully!');
+    } else {
+      print('Error uploading image. Status code: ${response.statusCode}');
+    }
+  }
+
+  Future uploadPhoto({required File photo}) async {
+    String url = "$LocalUrl/user/upload";
+    String? token = await storage.read(key: "token");
+
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    var image = await http.MultipartFile.fromPath('img', photo.path);
     request.files.add(image);
     request.headers.addAll({'Authorization': token!});
     var response = await request.send();

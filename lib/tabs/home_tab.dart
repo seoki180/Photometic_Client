@@ -18,6 +18,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   bool isPicked = false;
   var userRepositories = UserRepositories();
 
+  var userProvider = UserProvider();
   void getAlbum() async {
     XFile? imageFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -32,11 +33,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 
   void sendPhoto() {
     userRepositories.uploadPhoto(photo: _photo!);
-  }
-
-  void getAllPhotos(context) async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.getPhotoUrl();
   }
 
   @override
@@ -71,11 +67,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                       backgroundColor: Colors.red[200],
                       child: const Icon(Icons.publish),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          getAllPhotos(context);
-                        },
-                        child: const Text("ok"))
                   ],
                 ),
               ),
@@ -124,62 +115,72 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
-  var profilePhoto = '';
-
-  void getProfilePhoto(context) {
-    var data = Provider.of<UserProvider>(context, listen: false);
-    if (data.userCache["profilePhoto"] != '') {
-      profilePhoto = data.userCache["profilePhoto"];
+  void changeUserProfile() async {
+    XFile? imageFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      var image = File(imageFile.path);
+      UserRepositories().changeProfile(image);
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    getProfilePhoto(context);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 150, 0),
+            Flexible(
+              flex: 7,
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.black,
-                    backgroundImage: profilePhoto.isEmpty
-                        ? const AssetImage("assets/images/basic_profile.png")
-                            as ImageProvider
-                        : NetworkImage(profilePhoto),
-                  ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Consumer<UserProvider>(
                       builder: (context, value, child) {
-                        return Column(
-                          children: [
-                            Text(
-                              "${value.userCache["userName"]}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
+                        var profile = value.userCache["userProfile"];
+                        return GestureDetector(
+                          onTap: () => {changeUserProfile(), setState(() {})},
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.black,
+                            backgroundImage: profile != null
+                                ? NetworkImage(profile)
+                                : const AssetImage(
+                                        "assets/images/basic_profile.png")
+                                    as ImageProvider,
+                          ),
                         );
                       },
                     ),
                   ),
+                  Consumer<UserProvider>(
+                    builder: (context, value, child) {
+                      return Column(
+                        children: [
+                          Text(
+                            "${value.userCache["userName"]}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
-            Column(
-              children: const [
-                Text("정렬 기준"),
-                Text("숨김 라이브러리"),
-              ],
+            Flexible(
+              flex: 3,
+              child: Column(
+                children: const [
+                  Text("정렬 기준"),
+                  Text("숨김 라이브러리"),
+                ],
+              ),
             ),
           ],
         ),

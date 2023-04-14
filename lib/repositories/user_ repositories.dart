@@ -91,8 +91,8 @@ class UserRepositories {
     }
   }
 
-  Future getProfile() async {
-    String url = "$LocalUrl/user/";
+  Future getInfo() async {
+    String url = "$LocalUrl/user/info";
     String? token = await storage.read(key: "token");
 
     try {

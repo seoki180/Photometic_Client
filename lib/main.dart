@@ -22,7 +22,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userRepositories = UserRepositories();
-    final userProvider = UserProvider();
+    final userProvider = UserProvider(userRepositories: userRepositories);
     final photosProvider = PhotosProvider(userRepositories: userRepositories);
     return MultiProvider(
       providers: [

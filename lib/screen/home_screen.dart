@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final photosProvider = Provider.of<PhotosProvider>(context, listen: false);
-    userProvider.getProfile();
+    // userProvider.getProfile();
     photosProvider.getPhotoInfo();
     super.initState();
   }

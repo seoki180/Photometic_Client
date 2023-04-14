@@ -16,9 +16,10 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   File? _photo;
   bool isPicked = false;
-  var userRepositories = UserRepositories();
 
-  var userProvider = UserProvider();
+  final userRepositories = UserRepositories();
+  get userProvider => UserProvider(userRepositories: userRepositories);
+
   void getAlbum() async {
     XFile? imageFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -115,6 +116,7 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
+  @override
   void changeUserProfile() async {
     XFile? imageFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);

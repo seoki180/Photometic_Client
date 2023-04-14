@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:photometic/providers/user_provider.dart';
+import 'package:photometic/repositories/user_%20repositories.dart';
 import 'package:provider/provider.dart';
 
 class ProfileDrawer extends StatefulWidget {
@@ -15,12 +16,21 @@ class ProfileDrawer extends StatefulWidget {
 class _ProfileDrawerState extends State<ProfileDrawer> {
   final storage = const FlutterSecureStorage();
 
+  final userRepositories = UserRepositories();
+  get userProvider => UserProvider(userRepositories: userRepositories);
+
   // @override
   // void initState() {
   //   final userProvider = Provider.of<UserProvider>(context, listen: false);
   //   userProvider.getProfile();
   //   super.initState();
   // }
+
+  @override
+  void initState() {
+    userProvider.getProfile();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +49,19 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Flexible(
+                Flexible(
                   flex: 7,
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage("assets/images/img_splash.gif"),
+                  child: Consumer<UserProvider>(
+                    builder: (context, value, child) {
+                      var profile = value.userCache["userProfile"];
+                      return CircleAvatar(
+                          radius: 40,
+                          backgroundImage: profile == ''
+                              ? const AssetImage(
+                                      "assets/images/basic_profile.png")
+                                  as ImageProvider
+                              : NetworkImage(profile));
+                    },
                   ),
                 ),
                 Flexible(
@@ -75,6 +93,8 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
         ListTile(
           onTap: () {
             storage.delete(key: "token");
+            userProvider.logout();
+
             Navigator.pushNamedAndRemoveUntil(
                 context, "/start", (route) => false);
           },

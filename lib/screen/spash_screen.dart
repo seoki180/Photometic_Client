@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
   Future<bool> checkLogin() async {
     var token = await storage.read(key: "token");
     if (token != null) {
-      final res = await userRepositories.getProfile();
+      final res = await userRepositories.getInfo();
       if (res == '') {
         return false;
       }

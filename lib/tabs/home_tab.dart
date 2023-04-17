@@ -18,7 +18,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   bool isPicked = false;
 
   final userRepositories = UserRepositories();
-  get userProvider => UserProvider(userRepositories: userRepositories);
 
   void getAlbum() async {
     XFile? imageFile =
@@ -110,7 +109,6 @@ class MainContents extends StatelessWidget {
 
 class TopBar extends StatefulWidget {
   const TopBar({super.key});
-
   @override
   State<TopBar> createState() => _TopBarState();
 }
@@ -123,12 +121,15 @@ class _TopBarState extends State<TopBar> {
     if (imageFile != null) {
       var image = File(imageFile.path);
       UserRepositories().changeProfile(image);
-      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // final userRepositories = UserRepositories();
+    // final userProvider = UserProvider(userRepositories: userRepositories);
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -143,16 +144,17 @@ class _TopBarState extends State<TopBar> {
                     child: Consumer<UserProvider>(
                       builder: (context, value, child) {
                         var profile = value.userCache["userProfile"];
+                        print(profile);
                         return GestureDetector(
-                          onTap: () => {changeUserProfile(), setState(() {})},
+                          onTap: () => {changeUserProfile()},
                           child: CircleAvatar(
                             radius: 30,
                             backgroundColor: Colors.black,
-                            backgroundImage: profile != null
-                                ? NetworkImage(profile)
-                                : const AssetImage(
+                            backgroundImage: (profile == ' ')
+                                ? const AssetImage(
                                         "assets/images/basic_profile.png")
-                                    as ImageProvider,
+                                    as ImageProvider
+                                : NetworkImage(profile),
                           ),
                         );
                       },

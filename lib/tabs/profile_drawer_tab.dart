@@ -55,12 +55,13 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
                     builder: (context, value, child) {
                       var profile = value.userCache["userProfile"];
                       return CircleAvatar(
-                          radius: 40,
-                          backgroundImage: profile == ''
-                              ? const AssetImage(
-                                      "assets/images/basic_profile.png")
-                                  as ImageProvider
-                              : NetworkImage(profile));
+                        radius: 40,
+                        backgroundImage: profile == ' '
+                            ? const AssetImage(
+                                    "assets/images/basic_profile.png")
+                                as ImageProvider
+                            : NetworkImage(profile),
+                      );
                     },
                   ),
                 ),

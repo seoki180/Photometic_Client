@@ -24,9 +24,8 @@ class UserProvider extends ChangeNotifier {
     userCache.update("Idx", (value) => data["Idx"], ifAbsent: () => null);
     userCache.update("userProfile", (value) => data["userProfile"],
         ifAbsent: () => null);
-
-    print(userCache);
     notifyListeners();
+    print(userCache);
   }
 
   void logout() {

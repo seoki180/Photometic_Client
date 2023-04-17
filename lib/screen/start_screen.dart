@@ -19,17 +19,6 @@ class _StartScreenState extends State<StartScreen>
 
   final storage = const FlutterSecureStorage();
 
-  // void getLoginedInfo() async {
-  //   var loginedInfo = await storage.read(key: "token");
-  //   // print(loginedInfo);
-  // }
-
-  // @override
-  // void initState() {
-  //   getLoginedInfo();
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -12,7 +12,7 @@ class UserRepositories {
   static const storage = FlutterSecureStorage();
 
   Future Register({required RegisterModel registerModel}) async {
-    String url = "$LocalUrl/auth/register";
+    String url = "$BaseUrl/auth/register";
     final registerModelToJson = registerModel.toJson();
 
     try {
@@ -29,7 +29,7 @@ class UserRepositories {
   }
 
   Future Login({required LoginModel loginModel}) async {
-    String url = "$LocalUrl/auth/login";
+    String url = "$BaseUrl/auth/login";
     final loginModelToJson = loginModel.toJson();
 
     try {
@@ -40,10 +40,10 @@ class UserRepositories {
       if (response.statusCode == 200) {
         await storage.write(
           key: "token",
-          value: res["result"]["jwt"]["access"],
+          value: res["result"]["access"],
         );
+        return res;
       }
-      return res;
     } catch (err) {
       return {
         "code": 500,
@@ -54,7 +54,7 @@ class UserRepositories {
   }
 
   Future getPhotoInfo() async {
-    String url = "$LocalUrl/users/photos";
+    String url = "$BaseUrl/users/photos";
     String? token = await storage.read(key: "token");
 
     try {
@@ -92,7 +92,7 @@ class UserRepositories {
   }
 
   Future getInfo() async {
-    String url = "$LocalUrl/user/info";
+    String url = "$BaseUrl/user/info";
     String? token = await storage.read(key: "token");
 
     try {
@@ -112,7 +112,7 @@ class UserRepositories {
   }
 
   Future changeProfile(photo) async {
-    String url = "$LocalUrl/user/profile";
+    String url = "$BaseUrl/user/profile";
     String? token = await storage.read(key: "token");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -129,7 +129,7 @@ class UserRepositories {
   }
 
   Future uploadPhoto({required File photo}) async {
-    String url = "$LocalUrl/user/upload";
+    String url = "$BaseUrl/user/upload";
     String? token = await storage.read(key: "token");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));

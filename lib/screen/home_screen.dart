@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:photometic/providers/photos_provider.dart';
-import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/tabs/home_tab.dart';
 import 'package:photometic/tabs/profile_drawer_tab.dart';
-import 'package:photometic/tabs/profile_tab.dart';
-import 'package:provider/provider.dart';
+import 'package:photometic/tabs/map_tab.dart';
+import 'package:photometic/tabs/temp_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,9 +16,10 @@ class _HomeScreenState extends State<HomeScreen>
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   int _currentIndex = 1;
   final List _tabList = [
-    const ProfileTab(),
+    const ProfileDrawer(),
     const HomeTab(),
-    const ProfileTab(),
+    const TempTab(),
+    const MapTab(),
   ];
 
   _onTapItem(int index) {
@@ -29,15 +28,6 @@ class _HomeScreenState extends State<HomeScreen>
         : setState(() {
             _currentIndex = index;
           });
-  }
-
-  @override
-  void initState() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final photosProvider = Provider.of<PhotosProvider>(context, listen: false);
-    // userProvider.getProfile();
-    photosProvider.getPhotoInfo();
-    super.initState();
   }
 
   @override
@@ -55,13 +45,21 @@ class _HomeScreenState extends State<HomeScreen>
         onTap: _onTapItem,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_rounded), label: "프로필"),
+            icon: Icon(Icons.account_circle_rounded),
+            label: "프로필",
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "메인화면",
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.wallpaper_outlined), label: "사진화면"),
+            icon: Icon(Icons.home),
+            label: "메인화면",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map_outlined),
+            label: "지도",
+          ),
         ],
       ),
       body: _tabList[_currentIndex],

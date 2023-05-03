@@ -73,12 +73,12 @@ class _LoginScreenState extends State<LoginScreen>
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
 
-  void moveScreen(BuildContext context) {
-    Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
-  }
-
   @override
   Widget build(BuildContext context) {
+    void moveScreen() {
+      Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+    }
+
     final loginState = Provider.of<LoginModel>(context, listen: false);
     return Column(
       children: [
@@ -123,7 +123,7 @@ class LoginForm extends StatelessWidget {
                   var res = await userRepository.Login(loginModel: loginState);
                   Fluttertoast.showToast(msg: res.toString());
                   if (res["isSuccess"]) {
-                    moveScreen(context);
+                    moveScreen();
                   }
                 }
               },

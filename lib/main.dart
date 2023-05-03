@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photometic/models/login_model.dart';
+import 'package:photometic/models/register_model.dart';
 import 'package:photometic/providers/photos_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
@@ -27,6 +28,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginModel()),
+        ChangeNotifierProvider(create: (_) => RegisterModel()),
         ChangeNotifierProvider(create: (_) => userProvider),
         ChangeNotifierProvider(create: (_) => photosProvider),
       ],

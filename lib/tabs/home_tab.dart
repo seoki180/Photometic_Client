@@ -38,6 +38,10 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red[200],
+        title: const Text("Photometic"),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +118,6 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
-  @override
   void changeUserProfile() async {
     XFile? imageFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -126,67 +129,67 @@ class _TopBarState extends State<TopBar> {
 
   @override
   Widget build(BuildContext context) {
-    // final userRepositories = UserRepositories();
-    // final userProvider = UserProvider(userRepositories: userRepositories);
-    final userProvider = Provider.of<UserProvider>(context, listen: true);
+    final userRepositories = UserRepositories();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Row(
-          children: [
-            Flexible(
-              flex: 7,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Consumer<UserProvider>(
-                      builder: (context, value, child) {
-                        var profile = value.userCache["userProfile"];
-                        print(profile);
-                        return GestureDetector(
-                          onTap: () => {changeUserProfile()},
-                          child: CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.black,
-                            backgroundImage: (profile == ' ')
-                                ? const AssetImage(
-                                        "assets/images/basic_profile.png")
-                                    as ImageProvider
-                                : NetworkImage(profile),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Consumer<UserProvider>(
-                    builder: (context, value, child) {
-                      return Column(
-                        children: [
-                          Text(
-                            "${value.userCache["userName"]}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(userRepositories: userRepositories),
+          child: Row(
+            children: [
+              Flexible(
+                flex: 7,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Consumer<UserProvider>(
+                        builder: (context, value, child) {
+                          var profile = value.userCache["userProfile"];
+                          return GestureDetector(
+                            onTap: () => {changeUserProfile()},
+                            child: CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.black,
+                              backgroundImage: (profile == null)
+                                  ? const AssetImage(
+                                          "assets/images/basic_profile.png")
+                                      as ImageProvider
+                                  : NetworkImage(profile),
                             ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ],
+                          );
+                        },
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Consumer<UserProvider>(
+                          builder: (context, value, child) {
+                            return Text(
+                              "${value.userCache["userName"]}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Flexible(
-              flex: 3,
-              child: Column(
-                children: const [
-                  Text("정렬 기준"),
-                  Text("숨김 라이브러리"),
-                ],
+              Flexible(
+                flex: 3,
+                child: Column(
+                  children: const [
+                    Text("정렬 기준"),
+                    Text("숨김 라이브러리"),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(
             width: 400, child: Divider(color: Colors.red, thickness: 0.2))

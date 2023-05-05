@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:photometic/tabs/home_tab.dart';
 import 'package:photometic/tabs/profile_drawer_tab.dart';
 import 'package:photometic/tabs/map_tab.dart';
-import 'package:photometic/tabs/temp_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen>
   final List _tabList = [
     const ProfileDrawer(),
     const HomeTab(),
-    const TempTab(),
     const MapTab(),
   ];
 
@@ -47,10 +45,6 @@ class _HomeScreenState extends State<HomeScreen>
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle_rounded),
             label: "프로필",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "메인화면",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

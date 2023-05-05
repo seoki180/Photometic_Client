@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/tabs/profile_setting_tab.dart';
 import 'package:provider/provider.dart';
 
 class ProfileDrawer extends StatefulWidget {
@@ -34,27 +35,23 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
                   bottomRight: Radius.circular(20),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Flexible(
-                    flex: 7,
-                    child: Consumer<UserProvider>(
-                      builder: (context, value, child) {
-                        var profile = value.userCache["userProfile"];
-                        return CircleAvatar(
-                          radius: 40,
-                          backgroundImage: profile == ' '
-                              ? const AssetImage(
-                                      "assets/images/basic_profile.png")
-                                  as ImageProvider
-                              : NetworkImage(profile),
-                        );
-                      },
-                    ),
+                  Consumer<UserProvider>(
+                    builder: (context, value, child) {
+                      var profile = value.userCache["userProfile"];
+                      return CircleAvatar(
+                        radius: 50,
+                        backgroundImage: profile == null
+                            ? const AssetImage(
+                                    "assets/images/basic_profile.png")
+                                as ImageProvider
+                            : NetworkImage(profile),
+                      );
+                    },
                   ),
-                  Flexible(
-                    flex: 3,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -77,7 +74,12 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
         ),
         ListTile(
           title: const Text("계정 설정"),
-          onTap: () => print("계정 설정"),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ProfileSettingTab(),
+            ),
+          ),
         ),
         ListTile(
           onTap: () => print("환경설정"),

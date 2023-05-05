@@ -23,7 +23,8 @@ class UserRepositories {
     } catch (err) {
       return {
         "code": 500,
-        "msg": "$err",
+        "isSuccess": false,
+        "msg": err,
       };
     }
   }
@@ -47,14 +48,14 @@ class UserRepositories {
     } catch (err) {
       return {
         "code": 500,
-        "success": false,
+        "isSuccess": false,
         "msg": err,
       };
     }
   }
 
   Future getPhotoInfo() async {
-    String url = "$BaseUrl/users/photos";
+    String url = "$BaseUrl/photo";
     String? token = await storage.read(key: "token");
 
     try {
@@ -64,7 +65,7 @@ class UserRepositories {
       );
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        return (data);
+        return (data["result"]);
       }
     } catch (err) {
       print(err);
@@ -72,7 +73,7 @@ class UserRepositories {
   }
 
   Future getPhotos(userId) async {
-    String url = "$LocalUrl/id/$userId";
+    String url = "$BaseUrl/id/$userId";
     String? token = await storage.read(key: "token");
 
     try {
@@ -128,8 +129,8 @@ class UserRepositories {
     }
   }
 
-  Future uploadPhoto({required File photo}) async {
-    String url = "$BaseUrl/user/upload";
+  Future uploadPhoto(photo) async {
+    String url = "$BaseUrl/photo/upload";
     String? token = await storage.read(key: "token");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));

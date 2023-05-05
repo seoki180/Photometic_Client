@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photometic/providers/photo_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
+
 import 'package:provider/provider.dart';
 
 class HomeTab extends StatefulWidget {
@@ -32,48 +34,39 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   }
 
   void sendPhoto() {
-    userRepositories.uploadPhoto(photo: _photo!);
+    userRepositories.uploadPhoto(_photo);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red[200],
-        title: const Text("Photometic"),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Flexible(
-              flex: 25,
+            const Expanded(
+              flex: 20,
               child: TopBar(),
             ),
-            Flexible(
-              flex: 120,
+            Expanded(
+              flex: 100,
               child: MainContents(
                 isPicked: isPicked,
                 photo: _photo,
               ),
             ),
-            Flexible(
-              flex: 20,
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FloatingActionButton(
-                      heroTag: "btn1",
-                      onPressed: () {
-                        getAlbum();
-                      },
-                      backgroundColor: Colors.red[200],
-                      child: const Icon(Icons.publish),
-                    ),
-                  ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  heroTag: "btn1",
+                  onPressed: () {
+                    getAlbum();
+                  },
+                  backgroundColor: Colors.red[200],
+                  child: const Icon(Icons.publish),
                 ),
-              ),
+              ],
             )
           ],
         ),
@@ -94,18 +87,40 @@ class MainContents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userRepositories = UserRepositories();
+    var photoProvider = PhotoProvider(userRepositories: userRepositories);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Padding(
-            padding: EdgeInsets.only(top: 100), child: Text("Home Tab")),
-        Container(
-          child: isPicked
-              ? Image.file(_photo!)
-              : const SizedBox(
-                  width: 100,
-                ),
-        ),
+        FutureBuilder(
+            future: photoProvider.getPhotoInfo(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.data == "no") {
+                return const Text("아직 사진이 없습니다!");
+              } else {
+                print(snapshot.data);
+                return Expanded(
+                  child: GridView.builder(
+                    itemCount: snapshot.data.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Number of columns
+                      // mainAxisSpacing: 8, // Spacing between rows
+                      // crossAxisSpacing: 8, // Spacing between columns
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Image(
+                        image: NetworkImage(snapshot.data[index]),
+                      );
+                    },
+                  ),
+                );
+              }
+            })
       ],
     );
   }
@@ -118,15 +133,6 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
-  void changeUserProfile() async {
-    XFile? imageFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (imageFile != null) {
-      var image = File(imageFile.path);
-      UserRepositories().changeProfile(image);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final userRepositories = UserRepositories();
@@ -147,17 +153,14 @@ class _TopBarState extends State<TopBar> {
                       child: Consumer<UserProvider>(
                         builder: (context, value, child) {
                           var profile = value.userCache["userProfile"];
-                          return GestureDetector(
-                            onTap: () => {changeUserProfile()},
-                            child: CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.black,
-                              backgroundImage: (profile == null)
-                                  ? const AssetImage(
-                                          "assets/images/basic_profile.png")
-                                      as ImageProvider
-                                  : NetworkImage(profile),
-                            ),
+                          return CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.black,
+                            backgroundImage: (profile == null)
+                                ? const AssetImage(
+                                        "assets/images/basic_profile.png")
+                                    as ImageProvider
+                                : NetworkImage(profile),
                           );
                         },
                       ),
@@ -192,7 +195,12 @@ class _TopBarState extends State<TopBar> {
           ),
         ),
         const SizedBox(
-            width: 400, child: Divider(color: Colors.red, thickness: 0.2))
+          width: 500,
+          child: Divider(
+            color: Colors.red,
+            thickness: 0.2,
+          ),
+        )
       ],
     );
   }

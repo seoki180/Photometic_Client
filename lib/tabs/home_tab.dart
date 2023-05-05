@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:photometic/providers/photo_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
 import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/tabs/detail_tab.dart';
 
 import 'package:provider/provider.dart';
 
@@ -55,22 +56,18 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 photo: _photo,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  heroTag: "btn1",
-                  onPressed: () {
-                    getAlbum();
-                  },
-                  backgroundColor: Colors.red[200],
-                  child: const Icon(Icons.publish),
-                ),
-              ],
-            )
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "btn1",
+        onPressed: () {
+          getAlbum();
+        },
+        backgroundColor: Colors.red[200],
+        child: const Icon(Icons.publish),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
@@ -89,38 +86,56 @@ class MainContents extends StatelessWidget {
   Widget build(BuildContext context) {
     var userRepositories = UserRepositories();
     var photoProvider = PhotoProvider(userRepositories: userRepositories);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         FutureBuilder(
-            future: photoProvider.getPhotoInfo(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.data == "no") {
-                return const Text("아직 사진이 없습니다!");
-              } else {
-                print(snapshot.data);
-                return Expanded(
-                  child: GridView.builder(
-                    itemCount: snapshot.data.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Number of columns
-                      // mainAxisSpacing: 8, // Spacing between rows
-                      // crossAxisSpacing: 8, // Spacing between columns
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Image(
-                        image: NetworkImage(snapshot.data[index]),
-                      );
-                    },
+          future: photoProvider.getPhotoInfo(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.data == "no") {
+              return const Text("아직 사진이 없습니다!");
+            } else {
+              return Expanded(
+                child: GridView.builder(
+                  itemCount: snapshot.data.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3, // Number of columns
+                    childAspectRatio: 2 / 5, //ratio of photos
                   ),
-                );
-              }
-            })
+                  itemBuilder: (BuildContext context, int index) {
+                    final url = snapshot.data[index]["photoUrl"];
+                    final imageId = snapshot.data[index]["user_id"].toString();
+                    final idx = snapshot.data[index]["idx"].toString();
+
+                    return GestureDetector(
+                      onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailTab(
+                              imageUrl: url,
+                              imageId: imageId,
+                              imageIdx: idx,
+                            ),
+                          ),
+                        )
+                      },
+                      child: Image(
+                        image: NetworkImage(url),
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
+          },
+        ),
       ],
     );
   }
@@ -194,12 +209,9 @@ class _TopBarState extends State<TopBar> {
             ],
           ),
         ),
-        const SizedBox(
-          width: 500,
-          child: Divider(
-            color: Colors.red,
-            thickness: 0.2,
-          ),
+        const Divider(
+          color: Colors.red,
+          thickness: 0.5,
         )
       ],
     );

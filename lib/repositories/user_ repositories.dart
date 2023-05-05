@@ -12,7 +12,7 @@ class UserRepositories {
   static const storage = FlutterSecureStorage();
 
   Future Register({required RegisterModel registerModel}) async {
-    String url = "$BaseUrl/auth/register";
+    String url = "$LocalUrl/auth/register";
     final registerModelToJson = registerModel.toJson();
 
     try {
@@ -30,7 +30,7 @@ class UserRepositories {
   }
 
   Future Login({required LoginModel loginModel}) async {
-    String url = "$BaseUrl/auth/login";
+    String url = "$LocalUrl/auth/login";
     final loginModelToJson = loginModel.toJson();
 
     try {
@@ -55,7 +55,7 @@ class UserRepositories {
   }
 
   Future getPhotoInfo() async {
-    String url = "$BaseUrl/photo";
+    String url = "$LocalUrl/photo";
     String? token = await storage.read(key: "token");
 
     try {
@@ -72,20 +72,17 @@ class UserRepositories {
     }
   }
 
-  Future getPhotos(userId) async {
-    String url = "$BaseUrl/id/$userId";
+  Future deletePhoto(idx) async {
+    String url = "$LocalUrl/photo/$idx";
     String? token = await storage.read(key: "token");
 
     try {
-      final Response response = await http.get(
+      final Response respone = await http.delete(
         Uri.parse(url),
         headers: {HttpHeaders.authorizationHeader: token!},
       );
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        print(data);
-      } else {
-        print("no");
+      if (respone.statusCode == 200) {
+        return "delete ok";
       }
     } catch (err) {
       print(err);
@@ -93,7 +90,7 @@ class UserRepositories {
   }
 
   Future getInfo() async {
-    String url = "$BaseUrl/user/info";
+    String url = "$LocalUrl/user/info";
     String? token = await storage.read(key: "token");
 
     try {
@@ -113,7 +110,7 @@ class UserRepositories {
   }
 
   Future changeProfile(photo) async {
-    String url = "$BaseUrl/user/profile";
+    String url = "$LocalUrl/user/profile";
     String? token = await storage.read(key: "token");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -130,7 +127,7 @@ class UserRepositories {
   }
 
   Future uploadPhoto(photo) async {
-    String url = "$BaseUrl/photo/upload";
+    String url = "$LocalUrl/photo/upload";
     String? token = await storage.read(key: "token");
 
     var request = http.MultipartRequest('POST', Uri.parse(url));

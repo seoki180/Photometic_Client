@@ -10,13 +10,14 @@ class PhotoProvider extends ChangeNotifier {
 
   Future getPhotoInfo() async {
     final res = await userRepositories.getPhotoInfo();
-    print(res);
     if (res != null) {
       res.forEach(
-        (url) => {photoUrl.add(url["photoUrl"])},
+        (url) => {photoCache.add(url)},
       );
       notifyListeners();
-      return photoUrl;
+
+      print(photoCache);
+      return photoCache;
     }
     return "no";
   }

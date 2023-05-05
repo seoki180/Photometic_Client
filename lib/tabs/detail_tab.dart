@@ -18,13 +18,15 @@ class DetailTab extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(),
-      // backgroundColor: Colors.black.withOpacity(0.5),
       body: Center(
         child: ListView(
           children: [
             Column(
               children: [
-                Image(image: NetworkImage(imageUrl)),
+                Hero(
+                  tag: imageIdx,
+                  child: Image.network(imageUrl),
+                ),
               ],
             ),
           ],

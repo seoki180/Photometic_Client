@@ -126,14 +126,19 @@ class UserRepositories {
     }
   }
 
-  Future uploadPhoto(photo) async {
+  Future uploadPhoto(photo, lat, lng) async {
     String url = "$LocalUrl/photo/upload";
     String? token = await storage.read(key: "token");
+
+    print(lat);
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
     var image = await http.MultipartFile.fromPath('img', photo.path);
     request.files.add(image);
     request.headers.addAll({'Authorization': token!});
+    // request.fields["lat"] = lat;
+    // request.fields["lng"] = lng;
+
     var response = await request.send();
 
     if (response.statusCode == 200) {

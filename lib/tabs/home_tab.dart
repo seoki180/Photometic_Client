@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:exif/exif.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photometic/providers/photo_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
@@ -25,17 +27,30 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   void getAlbum() async {
     XFile? imageFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
+
     if (imageFile != null) {
+      final bytes = await imageFile.readAsBytes();
+      final exifData = await readExifFromBytes(bytes);
+      IfdTag? lat;
+      IfdTag? lng;
+
+      if (exifData.containsKey('GPS GPSLatitude') &&
+          exifData.containsKey('GPS GPSLongitude')) {
+        lat = exifData['GPS GPSLatitude']!;
+        lng = exifData['GPS GPSLongitude']!;
+        print('Latitude: $lat, Longitude: $lng');
+      } else {
+        print("np");
+      }
       setState(() {
         _photo = File(imageFile.path);
         isPicked = true;
-        sendPhoto();
+        userRepositories.uploadPhoto(_photo, lat, lng);
       });
+      Fluttertoast.showToast(msg: "upload ok");
+    } else {
+      Fluttertoast.showToast(msg: "no image selected");
     }
-  }
-
-  void sendPhoto() {
-    userRepositories.uploadPhoto(_photo);
   }
 
   @override
@@ -72,7 +87,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   }
 }
 
-class MainContents extends StatelessWidget {
+class MainContents extends StatefulWidget {
   const MainContents({
     super.key,
     required this.isPicked,
@@ -83,60 +98,77 @@ class MainContents extends StatelessWidget {
   final File? _photo;
 
   @override
+  State<MainContents> createState() => _MainContentsState();
+}
+
+class _MainContentsState extends State<MainContents> {
+  Future<void> _refresh() async {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     var userRepositories = UserRepositories();
     var photoProvider = PhotoProvider(userRepositories: userRepositories);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FutureBuilder(
-          future: photoProvider.getPhotoInfo(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.data == "no") {
-              return const Text("아직 사진이 없습니다!");
-            } else {
-              return Expanded(
-                child: GridView.builder(
-                  itemCount: snapshot.data.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // Number of columns
-                    childAspectRatio: 2 / 5, //ratio of photos
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    final url = snapshot.data[index]["photoUrl"];
-                    final imageId = snapshot.data[index]["user_id"].toString();
-                    final idx = snapshot.data[index]["idx"].toString();
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FutureBuilder(
+            future: photoProvider.getPhotoInfo(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.data == "no") {
+                return const Text("아직 사진이 없습니다!");
+              } else {
+                return Expanded(
+                  child: GridView.builder(
+                    itemCount: snapshot.data.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // Number of columns
+                      childAspectRatio: 2 / 5, //ratio of photos
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      final url = snapshot.data[index]["photoUrl"];
+                      final imageId =
+                          snapshot.data[index]["user_id"].toString();
+                      final idx = snapshot.data[index]["idx"].toString();
 
-                    return GestureDetector(
-                      onTap: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailTab(
-                              imageUrl: url,
-                              imageId: imageId,
-                              imageIdx: idx,
+                      return GestureDetector(
+                        onTap: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailTab(
+                                imageUrl: url,
+                                imageId: imageId,
+                                imageIdx: idx,
+                              ),
                             ),
                           ),
-                        )
-                      },
-                      child: Image(
-                        image: NetworkImage(url),
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  },
-                ),
-              );
-            }
-          },
-        ),
-      ],
+                        },
+                        child: Hero(
+                          tag: idx,
+                          child: Image.network(
+                            url,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }

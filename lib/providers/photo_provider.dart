@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 
 class PhotoProvider extends ChangeNotifier {
   UserRepositories userRepositories;
@@ -15,10 +15,7 @@ class PhotoProvider extends ChangeNotifier {
         (url) => {photoCache.add(url)},
       );
       notifyListeners();
-
-      print(photoCache);
-      return photoCache;
     }
-    return "no";
+    return photoCache;
   }
 }

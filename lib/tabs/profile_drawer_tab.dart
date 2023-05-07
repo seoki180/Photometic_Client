@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:photometic/providers/user_provider.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 import 'package:photometic/tabs/profile_setting_tab.dart';
 import 'package:provider/provider.dart';
 

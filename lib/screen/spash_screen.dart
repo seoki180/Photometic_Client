@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -22,12 +22,12 @@ class _SplashScreenState extends State<SplashScreen>
     var token = await storage.read(key: "token");
     if (token != null) {
       final res = await userRepositories.getInfo();
-      if (res == '') {
-        return false;
+      if (res["isSuccess"]) {
+        return true; //Login 성공
       }
-      return true;
+      return false; //Login 실패
     }
-    return false;
+    return false; //Token 만료
   }
 
   void moveScreen() async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 
 class DetailTab extends StatelessWidget {
   final String imageUrl, imageId, imageIdx;
@@ -35,7 +35,7 @@ class DetailTab extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final res = await userRepositories.deletePhoto(imageIdx);
-          Fluttertoast.showToast(msg: res.toString());
+          Fluttertoast.showToast(msg: res["message"]);
           Navigator.pop(context);
         },
         child: const Icon(Icons.delete),

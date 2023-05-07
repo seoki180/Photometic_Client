@@ -18,8 +18,13 @@ class UserRepositories {
     try {
       final Response response =
           await http.post(Uri.parse(url), body: registerModelToJson);
-      final res = json.decode(response.body);
-      return res;
+
+      if (response.statusCode == 500) {
+        throw Error();
+      } else {
+        final data = json.decode(response.body);
+        return data;
+      }
     } catch (err) {
       return {
         "code": 500,
@@ -36,14 +41,16 @@ class UserRepositories {
     try {
       final Response response =
           await http.post(Uri.parse(url), body: loginModelToJson);
-      final res = json.decode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 500) {
+        throw Error();
+      } else {
+        final data = json.decode(response.body);
         await storage.write(
           key: "token",
-          value: res["result"]["access"],
+          value: data["result"]["access"],
         );
-        return res;
+        return data;
       }
     } catch (err) {
       return {
@@ -63,12 +70,18 @@ class UserRepositories {
         Uri.parse(url),
         headers: {HttpHeaders.authorizationHeader: token!},
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 500) {
+        throw Error();
+      } else {
         var data = json.decode(response.body);
         return (data["result"]);
       }
     } catch (err) {
-      print(err);
+      return {
+        "code": 500,
+        "isSuccess": false,
+        "msg": err,
+      };
     }
   }
 
@@ -77,15 +90,22 @@ class UserRepositories {
     String? token = await storage.read(key: "token");
 
     try {
-      final Response respone = await http.delete(
+      final Response response = await http.delete(
         Uri.parse(url),
         headers: {HttpHeaders.authorizationHeader: token!},
       );
-      if (respone.statusCode == 200) {
-        return "delete ok";
+      if (response.statusCode == 500) {
+        throw Error();
+      } else {
+        var data = json.decode(response.body);
+        return data;
       }
     } catch (err) {
-      print(err);
+      return {
+        "code": 500,
+        "isSuccess": false,
+        "msg": err,
+      };
     }
   }
 
@@ -98,53 +118,69 @@ class UserRepositories {
         Uri.parse(url),
         headers: {HttpHeaders.authorizationHeader: token!},
       );
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        return data["result"];
-      } else {
-        return '';
+      if (response.statusCode == 500) {
+        throw Error();
       }
+      var data = json.decode(response.body);
+      return data;
     } catch (err) {
-      return '';
+      return {
+        "code": 500,
+        "isSuccess": false,
+        "msg": err,
+      };
     }
   }
 
   Future changeProfile(photo) async {
     String url = "$LocalUrl/user/profile";
     String? token = await storage.read(key: "token");
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      var image = await http.MultipartFile.fromPath('img', photo.path);
+      request.files.add(image);
+      request.headers.addAll({'Authorization': token!});
+      var response = await request.send();
 
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-    var image = await http.MultipartFile.fromPath('img', photo.path);
-    request.files.add(image);
-    request.headers.addAll({'Authorization': token!});
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      print('Image uploaded successfully!');
-    } else {
-      print('Error uploading image. Status code: ${response.statusCode}');
+      if (response.statusCode == 500) {
+        throw Error();
+      } else {
+        var responseBody = await response.stream.bytesToString();
+        var decodedResponse = json.decode(responseBody);
+        return decodedResponse;
+      }
+    } catch (err) {
+      return {
+        "code": 500,
+        "isSuccess": false,
+        "msg": err,
+      };
     }
   }
 
-  Future uploadPhoto(photo, lat, lng) async {
+  Future uploadPhoto(photo) async {
     String url = "$LocalUrl/photo/upload";
     String? token = await storage.read(key: "token");
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      var image = await http.MultipartFile.fromPath('img', photo.path);
+      request.files.add(image);
+      request.headers.addAll({'Authorization': token!});
 
-    print(lat);
-
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-    var image = await http.MultipartFile.fromPath('img', photo.path);
-    request.files.add(image);
-    request.headers.addAll({'Authorization': token!});
-    // request.fields["lat"] = lat;
-    // request.fields["lng"] = lng;
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      print('Image uploaded successfully!');
-    } else {
-      print('Error uploading image. Status code: ${response.statusCode}');
+      var response = await request.send();
+      if (response.statusCode == 500) {
+        throw Error();
+      } else {
+        var responseBody = await response.stream.bytesToString();
+        var decodedResponse = json.decode(responseBody);
+        return decodedResponse;
+      }
+    } catch (err) {
+      return {
+        "code": 500,
+        "isSuccess": false,
+        "msg": err,
+      };
     }
   }
 }

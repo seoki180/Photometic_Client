@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photometic/providers/photo_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 import 'package:photometic/tabs/detail_tab.dart';
 
 import 'package:provider/provider.dart';
@@ -31,21 +31,20 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     if (imageFile != null) {
       final bytes = await imageFile.readAsBytes();
       final exifData = await readExifFromBytes(bytes);
-      IfdTag? lat;
-      IfdTag? lng;
 
       if (exifData.containsKey('GPS GPSLatitude') &&
           exifData.containsKey('GPS GPSLongitude')) {
-        lat = exifData['GPS GPSLatitude']!;
-        lng = exifData['GPS GPSLongitude']!;
-        print('Latitude: $lat, Longitude: $lng');
+        // lat = exifData['GPS GPSLatitude']!;
+        // lng = exifData['GPS GPSLongitude']!;
+
+        // LatLng = LatLngModel(lat: lat, lng: lng).LatLng;
       } else {
         print("np");
       }
       setState(() {
         _photo = File(imageFile.path);
         isPicked = true;
-        userRepositories.uploadPhoto(_photo, lat, lng);
+        var upload = userRepositories.uploadPhoto(_photo);
       });
       Fluttertoast.showToast(msg: "upload ok");
     } else {
@@ -119,13 +118,7 @@ class _MainContentsState extends State<MainContents> {
           FutureBuilder(
             future: photoProvider.getPhotoInfo(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.data == "no") {
-                return const Text("아직 사진이 없습니다!");
-              } else {
+              if (snapshot.hasData) {
                 return Expanded(
                   child: GridView.builder(
                     itemCount: snapshot.data.length,
@@ -164,6 +157,8 @@ class _MainContentsState extends State<MainContents> {
                     },
                   ),
                 );
+              } else {
+                return const CircularProgressIndicator();
               }
             },
           ),

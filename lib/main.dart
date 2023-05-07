@@ -3,7 +3,7 @@ import 'package:photometic/models/login_model.dart';
 import 'package:photometic/models/register_model.dart';
 import 'package:photometic/providers/photo_provider.dart';
 import 'package:photometic/providers/user_provider.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 import 'package:photometic/screen/home_screen.dart';
 import 'package:photometic/screen/login_screen.dart';
 import 'package:photometic/screen/register_screen.dart';

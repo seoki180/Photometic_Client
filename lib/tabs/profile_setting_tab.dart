@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photometic/providers/user_provider.dart';
-import 'package:photometic/repositories/user_%20repositories.dart';
+import 'package:photometic/repositories/user_repositories.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSettingTab extends StatelessWidget {
@@ -18,7 +19,9 @@ class ProfileSettingTab extends StatelessWidget {
           await ImagePicker().pickImage(source: ImageSource.gallery);
       if (imageFile != null) {
         var image = File(imageFile.path);
-        userRepositories.changeProfile(image);
+        var res = await userRepositories.changeProfile(image);
+
+        Fluttertoast.showToast(msg: res["message"]);
       }
     }
 

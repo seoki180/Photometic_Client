@@ -76,7 +76,11 @@ class RegisterForm extends StatelessWidget {
           onChanged: (id) => {
             registerState.setId(id),
           },
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            labelStyle: TextStyle(
+              color: Colors.red[200],
+              fontSize: 15,
+            ),
             labelText: "ID",
           ),
           keyboardType: TextInputType.emailAddress,
@@ -95,7 +99,11 @@ class RegisterForm extends StatelessWidget {
           onChanged: (password) => {
             registerState.setPassword(password),
           },
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            labelStyle: TextStyle(
+              color: Colors.red[200],
+              fontSize: 15,
+            ),
             labelText: "PASSWORD",
           ),
           keyboardType: TextInputType.text,
@@ -115,7 +123,11 @@ class RegisterForm extends StatelessWidget {
           onChanged: (name) => {
             registerState.setName(name),
           },
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            labelStyle: TextStyle(
+              color: Colors.red[200],
+              fontSize: 15,
+            ),
             labelText: "NAME",
           ),
           keyboardType: TextInputType.text,

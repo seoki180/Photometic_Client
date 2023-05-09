@@ -37,41 +37,77 @@ class _StartScreenState extends State<StartScreen>
                         return Image.asset(imageItem[index].toString());
                       }),
                       autoplay: true,
-                      pagination: const SwiperPagination(
-                          builder: DotSwiperPaginationBuilder(
-                        color: Colors.grey,
-                        activeColor: Colors.blue,
-                      )),
+                      pagination: SwiperPagination(
+                        builder: DotSwiperPaginationBuilder(
+                          color: Colors.grey,
+                          activeColor: Theme.of(context).primaryColor,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
             Flexible(
-              flex: 4,
-              child: Column(
+              flex: 1,
+              child: Row(
                 children: [
-                  SizedBox(
-                    width: 200,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/login");
-                      },
-                      child: const Text("로그인 하러 가기"),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/register");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text(
+                              "회원가입",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Icon(Icons.person_add_alt)
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  SizedBox(
-                    width: 200,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/register");
-                      },
-                      child: const Text("회원가입 하러 가기"),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 50,
+                      width: 150,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/login");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text(
+                              "로그인",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_sharp,
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],

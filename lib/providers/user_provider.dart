@@ -23,8 +23,7 @@ class UserProvider extends ChangeNotifier {
 
   Future getProfile() async {
     final res = await userRepositories.getInfo();
-
-    if (res == '') {
+    if (!res["isSuccess"]) {
       return;
     }
     final data = res["result"][0];

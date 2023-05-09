@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photometic/repositories/user_repositories.dart';
 
-class DetailTab extends StatelessWidget {
+class DetailTab extends StatefulWidget {
   final String imageUrl, imageId, imageIdx;
 
   const DetailTab({
@@ -11,6 +11,15 @@ class DetailTab extends StatelessWidget {
     required this.imageIdx,
     super.key,
   });
+
+  @override
+  State<DetailTab> createState() => _DetailTabState();
+}
+
+class _DetailTabState extends State<DetailTab> {
+  Future<void> _refresh() async {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +33,8 @@ class DetailTab extends StatelessWidget {
             Column(
               children: [
                 Hero(
-                  tag: imageIdx,
-                  child: Image.network(imageUrl),
+                  tag: widget.imageIdx,
+                  child: Image.network(widget.imageUrl),
                 ),
               ],
             ),
@@ -34,8 +43,9 @@ class DetailTab extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final res = await userRepositories.deletePhoto(imageIdx);
+          final res = await userRepositories.deletePhoto(widget.imageIdx);
           Fluttertoast.showToast(msg: res["message"]);
+          _refresh();
           Navigator.pop(context);
         },
         child: const Icon(Icons.delete),

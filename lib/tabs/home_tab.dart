@@ -20,7 +20,6 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   File? _photo;
-  bool isPicked = false;
 
   final userRepositories = UserRepositories();
 
@@ -36,17 +35,16 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
           exifData.containsKey('GPS GPSLongitude')) {
         // lat = exifData['GPS GPSLatitude']!;
         // lng = exifData['GPS GPSLongitude']!;
-
-        // LatLng = LatLngModel(lat: lat, lng: lng).LatLng;
-      } else {
-        print("np");
       }
       setState(() {
         _photo = File(imageFile.path);
-        isPicked = true;
-        var upload = userRepositories.uploadPhoto(_photo);
       });
-      Fluttertoast.showToast(msg: "upload ok");
+      var upload = await userRepositories.uploadPhoto(_photo);
+      if (upload["isSuccess"]) {
+        Fluttertoast.showToast(msg: upload["message"]);
+      } else {
+        Fluttertoast.showToast(msg: upload["message"]);
+      }
     } else {
       Fluttertoast.showToast(msg: "no image selected");
     }
@@ -58,17 +56,14 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Expanded(
+          children: const [
+            Expanded(
               flex: 20,
               child: TopBar(),
             ),
             Expanded(
               flex: 100,
-              child: MainContents(
-                isPicked: isPicked,
-                photo: _photo,
-              ),
+              child: MainContents(),
             ),
           ],
         ),
@@ -78,7 +73,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
         onPressed: () {
           getAlbum();
         },
-        backgroundColor: Colors.red[200],
+        backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.publish),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -89,12 +84,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 class MainContents extends StatefulWidget {
   const MainContents({
     super.key,
-    required this.isPicked,
-    required File? photo,
-  }) : _photo = photo;
-
-  final bool isPicked;
-  final File? _photo;
+  });
 
   @override
   State<MainContents> createState() => _MainContentsState();
@@ -236,9 +226,9 @@ class _TopBarState extends State<TopBar> {
             ],
           ),
         ),
-        const Divider(
-          color: Colors.red,
-          thickness: 0.5,
+        Divider(
+          color: Theme.of(context).primaryColor,
+          thickness: 1,
         )
       ],
     );

@@ -40,23 +40,13 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                   Form(
                     key: formkey,
-                    child: Theme(
-                      data: ThemeData(
-                        inputDecorationTheme: InputDecorationTheme(
-                          labelStyle: TextStyle(
-                            color: Colors.red[200],
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Column(
-                          children: const [
-                            LoginForm(),
-                            FindPassword(),
-                          ],
-                        ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: const [
+                          LoginForm(),
+                          FindPassword(),
+                        ],
                       ),
                     ),
                   ),
@@ -86,7 +76,11 @@ class LoginForm extends StatelessWidget {
           onChanged: (id) {
             loginState.setId(id);
           },
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            labelStyle: TextStyle(
+              color: Colors.red[200],
+              fontSize: 15,
+            ),
             labelText: "ID",
           ),
           keyboardType: TextInputType.emailAddress,
@@ -99,7 +93,11 @@ class LoginForm extends StatelessWidget {
         ),
         TextFormField(
           onChanged: (password) => loginState.setPassword(password),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            labelStyle: TextStyle(
+              color: Colors.red[200],
+              fontSize: 15,
+            ),
             labelText: "PASSWORD",
           ),
           keyboardType: TextInputType.text,
@@ -121,6 +119,7 @@ class LoginForm extends StatelessWidget {
                 if (formkey.currentState!.validate()) {
                   var userRepository = UserRepositories();
                   var res = await userRepository.Login(loginModel: loginState);
+                  print(res);
                   Fluttertoast.showToast(msg: res["message"].toString());
                   if (res["isSuccess"]) {
                     moveScreen();
@@ -128,7 +127,7 @@ class LoginForm extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[200],
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               child: const Icon(Icons.arrow_forward),
             ),

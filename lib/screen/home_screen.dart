@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photometic/tabs/calendar_tab.dart';
 import 'package:photometic/tabs/home_tab.dart';
 import 'package:photometic/tabs/profile_drawer_tab.dart';
 import 'package:photometic/tabs/map_tab.dart';
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen>
     const ProfileDrawer(),
     const HomeTab(),
     const MapTab(),
+    CalendarTab()
   ];
 
   _onTapItem(int index) {
@@ -53,6 +55,10 @@ class _HomeScreenState extends State<HomeScreen>
           BottomNavigationBarItem(
             icon: Icon(Icons.map_outlined),
             label: "지도",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month_outlined),
+            label: "캘린더",
           ),
         ],
       ),

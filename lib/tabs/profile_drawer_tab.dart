@@ -29,7 +29,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
           child: Container(
             child: DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.red[200],
+                color: Theme.of(context).primaryColor,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),

@@ -33,6 +33,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => photosProvider),
       ],
       child: MaterialApp(
+        theme: ThemeData(
+          primaryColor: Colors.red[200],
+        ),
         debugShowCheckedModeBanner: true,
         initialRoute: '/splash',
         routes: {

@@ -20,7 +20,6 @@ class ProfileSettingTab extends StatelessWidget {
       if (imageFile != null) {
         var image = File(imageFile.path);
         var res = await userRepositories.changeProfile(image);
-
         Fluttertoast.showToast(msg: res["message"]);
       }
     }
@@ -28,7 +27,7 @@ class ProfileSettingTab extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("계정 설정"),
-        backgroundColor: Colors.red[200],
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ChangeNotifierProvider(
         create: (context) => UserProvider(userRepositories: userRepositories),

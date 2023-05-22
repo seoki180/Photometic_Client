@@ -30,21 +30,28 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
     if (imageFile != null) {
       final bytes = await imageFile.readAsBytes();
       final exifData = await readExifFromBytes(bytes);
+      IfdTag? photoDate;
+      final uploadDate = DateTime.now();
 
-      if (exifData.containsKey('GPS GPSLatitude') &&
-          exifData.containsKey('GPS GPSLongitude')) {
-        // lat = exifData['GPS GPSLatitude']!;
-        // lng = exifData['GPS GPSLongitude']!;
+      if (exifData.containsKey("EXIF DateTimeOriginal")) {
+        photoDate = exifData["EXIF DateTimeOriginal"];
       }
       setState(() {
         _photo = File(imageFile.path);
       });
-      var upload = await userRepositories.uploadPhoto(_photo);
-      if (upload["isSuccess"]) {
-        Fluttertoast.showToast(msg: upload["message"]);
-      } else {
-        Fluttertoast.showToast(msg: upload["message"]);
-      }
+      await userRepositories
+          .uploadPhoto(
+        _photo,
+        photoDate,
+        uploadDate,
+      )
+          .then((value) {
+        if (value["isSuccess"]) {
+          Fluttertoast.showToast(msg: value["message"].toString());
+        } else {
+          Fluttertoast.showToast(msg: value["message"].toString());
+        }
+      });
     } else {
       Fluttertoast.showToast(msg: "no image selected");
     }
@@ -56,12 +63,33 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Expanded(
-              flex: 20,
-              child: TopBar(),
-            ),
-            Expanded(
+                flex: 15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: const [
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Photometic",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Theme.of(context).primaryColor,
+                      thickness: 2,
+                    )
+                  ],
+                )),
+            const Expanded(
               flex: 100,
               child: MainContents(),
             ),
@@ -116,6 +144,8 @@ class _MainContentsState extends State<MainContents> {
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, // Number of columns
                       childAspectRatio: 2 / 5, //ratio of photos
+                      crossAxisSpacing: 3,
+                      mainAxisSpacing: 3,
                     ),
                     itemBuilder: (BuildContext context, int index) {
                       final url = snapshot.data[index]["photoUrl"];

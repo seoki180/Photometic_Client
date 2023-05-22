@@ -29,7 +29,7 @@ class UserRepositories {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }
@@ -50,13 +50,17 @@ class UserRepositories {
           key: "token",
           value: data["result"]["access"],
         );
+        await storage.write(
+          key: "refresh",
+          value: data["result"]["refresh"],
+        );
         return data;
       }
     } catch (err) {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }
@@ -80,7 +84,7 @@ class UserRepositories {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }
@@ -104,7 +108,7 @@ class UserRepositories {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }
@@ -127,7 +131,7 @@ class UserRepositories {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }
@@ -153,18 +157,24 @@ class UserRepositories {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }
 
-  Future uploadPhoto(photo) async {
+  Future uploadPhoto(photo, photoDate, uploadDate) async {
     String url = "$LocalUrl/photo/upload";
     String? token = await storage.read(key: "token");
+    print(photoDate);
+    print(uploadDate);
+
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
       var image = await http.MultipartFile.fromPath('img', photo.path);
       request.files.add(image);
+      request.fields["photoDate"] = photoDate.toString();
+      request.fields["uploadDate"] = uploadDate.toString();
+
       request.headers.addAll({'Authorization': token!});
 
       var response = await request.send();
@@ -179,7 +189,7 @@ class UserRepositories {
       return {
         "code": 500,
         "isSuccess": false,
-        "msg": err,
+        "message": err,
       };
     }
   }

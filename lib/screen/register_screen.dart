@@ -156,7 +156,7 @@ class RegisterForm extends StatelessWidget {
                   if (res["code"] == 200) {
                     moveScreen();
                   }
-                  Fluttertoast.showToast(msg: res.toString());
+                  Fluttertoast.showToast(msg: res["message"].toString());
                 }
               },
               style: ElevatedButton.styleFrom(
